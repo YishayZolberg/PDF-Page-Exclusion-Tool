@@ -1,0 +1,30 @@
+import os
+import PyPDF2
+
+
+def merge_pdfs(input_paths, output_path, exclude_pages=1):
+    pdf_writer = PyPDF2.PdfWriter()
+
+    for input_path in input_paths:
+        with open(input_path, 'rb') as pdf_file:
+            pdf_reader = PyPDF2.PdfReader(pdf_file)
+
+            for page_num in range(exclude_pages, len(pdf_reader.pages)):
+                pdf_writer.add_page(pdf_reader.pages[page_num])
+
+    with open(output_path, 'wb') as output_file:
+        pdf_writer.write(output_file)
+
+
+if __name__ == '__main__':
+    input_folder = r'C:\Users\Owner\Desktop\es'  # Replace with your input folder path
+    output_folder = r'C:\Users\Owner\Desktop\es2'  # Replace with your output folder path
+    exclude_pages = 1
+
+    pdf_files = [file for file in os.listdir(input_folder) if file.lower().endswith('.pdf')]
+
+    for pdf_file in pdf_files:
+        input_path = os.path.join(input_folder, pdf_file)
+        output_path = os.path.join(output_folder, pdf_file.replace('.pdf', '_modified.pdf'))
+
+        merge_pdfs([input_path], output_path, exclude_pages)
